@@ -320,6 +320,143 @@ datetime.to_s(format_symbol)
 Time::DATE_FORMATS[:custom] = "%B %e, %Y at %l:%M %p"
 ```
 
+#### 3. Custom Helpers
+
+- Ruby Modules
+- created when generating a controller
+  - File name and module name must correspond
+- Helper methods are available in view templates
+- Useful for:
+  - Frequently used code
+  - Storing complex code to simplify view templates
+  - Writing large sections of ruby code
+
+When Defining custom helpers first make sure if this particular helper will be shared among other controller views.
+
+If so, we can define our custom helpers from within the application_helper.html.erb inside of our helpers folder.
+
+- status_tag method that takes up 2 parameters, the boolean value from page.visible and the default parameters for the options hash
+- now if boolean == true or visible show the content_tag with the span class of status true and append the double quotes from within the "<span>" "</span" tags, as a placeholder for text,
+- whatever we defined inside of the options[:true_text] ||= "some string", will be outputted in the view in between the span tags
+
+##### application_helper.rb
+
+```ruby
+module ApplicationHelper
+  def status_tag(boolean , options = {})
+    options[:true_text] ||= ''
+    options[:true_text] ||= ''
+    # OR
+    # options[:true_text] ||= 'true' # outputs "true" if boolean is true within span tags with the class of status true
+    # options[:false_text] ||= 'false' # outputs "false" if boolean is false within span tags with the class of status false
+
+    if boolean 
+      # if boolean = true
+      content_tag(:span, options[:true_text], :class=> "status true") 
+    else
+      # if boolean = false
+      content_tag(:span, options[:false_text], :class => "status false") 
+    end
+  end
+end
+```
+
+##### index.html.erb
+
+```erb
+<!--if status(subject.visible = true) show the corresponding span tag and it's class--> 
+<td class="center"><%= status_tag(subject.visible) %></td> 
+```
+
+#### 4. Sanitize Helpers
+
+- Preventing Cross-site scripting
+  - Prevents scripting events from our forms if sent via processing the form
+
+
+- Escaping output
+  - html_escape(), h()
+  - raw()
+  - html_safe - marks that html as safe
+  - html_safe? - checks and see if that html is safe
+
+##### Escaping output
+
+```erb
+<% evil_string = "<script>alert('Gotcha!');</script>" %>
+<% good_string = "<strong> Welcome to my site </strong>" %>
+
+<!-- By default rails detects the script tags and html tags and refuses to render these strings -->
+<!-- renders them as normal strings -->
+<%= evil_string %> <br>
+<%= good_string %> <br>
+
+<!-- processes the strings defined as normal html string (Caution) -->
+<!-- renders the strings as html -->
+<%= raw(evil_string) %> <br>
+<%= raw(good_string) %> <br>
+
+<!-- forces all of the html as safe -->
+<%= evil_string.html_safe %> <br>
+<%= evil_string.html_safe %> <br>
+
+
+<!-- checks if the strings are safe -->
+<!-- returns true if safe, returns false if not safe -->
+<%= evil_string.html_safe? %> <br>
+<%= good_string.html_safe? %> <br>
+```
+
+##### strip_links(html)
+
+Removes HTML links from text
+
+```erb
+<!-- detects links and strips them out but the text itself is still rendered-->
+strip_links('<strong>Please</strong> visit <a href="http://example.com'>us</a>')                      
+                                                    
+<%= strip_links(simple_string) %>
+```
+
+##### strip_tags(html)
+
+Removes all HTML tags from text
+
+```erb
+<!-- detects html tags and strips them out but normal text is still rendered-->
+strip_tags('<strong>Please</strong> visit <a href"http://example.com">us</a>')
+
+
+<!-- checks the string if there any containing links or tags then strips them with the strip_links and strip_tag helper methods-->
+<% simple_string = '<strong> Please </strong> visit <a href="http://example.com"> us </a>'%>
+
+<%= strip_tags(simple_string) %> <br>
+
+```
+
+##### sanitize(html,options)
+
+Removes html and javascript, watching for all tricks, 
+
+Options: tags, :attributes(as arrays) to whitelist
+
+```erb
+sanitize(@subject.content, 
+:tags => ['p','br','strong','em'], <!-- tags that can be used-->
+:attributes => ['id', 'class', 'style']) <!--attributes that can be used with those tags-->
+
+<!-- by default sanitize will just remove javascript only -->
+<%= sanitize(evil_string) %> <br>
+
+<!-- However if we specify a tags key or an attributes key we can specify which tags and attributes are available to be rendered for the view or be inserted into the db -->
+<%= sanitize(simple_string, :tags => ['strong', 'em', 'a']) %> <br>
+
+<!-- to specify no tags or links to whitelist just leave the tags as a blank array -->
+<%= sanitize(simple_string, :tags => []) %> <br>
+```
+
+
+
 
 
 
