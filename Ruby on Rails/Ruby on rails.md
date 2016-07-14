@@ -1600,8 +1600,6 @@ flash[:notice] = "The Subject was created successfully"
 flash[:error] = "You don't have enough access privelages"
 ```
 
-
-
 ### 9.Rails Templates
 
 ##### 9.1 Layouts
@@ -1733,6 +1731,203 @@ Whenever we specify a partial and include it in an existing template, this will 
 </div>
 ```
 
+#### 10. Asset Pipeline
+
+* Concatenates CSS and Javascript files
+* Compresses/Minifies CSS and Javascript
+* Precompiles CSS and Javascript
+* Allows writing assets in other languages
+* Adds assets fingerprinting  - Keeps cache assets up-to-date. The Asset file will be cached inside the users web browser. Whenever something about the file changes, the md5 hash will change and that gives the asset a new fingerprint and therefore a new filename.
+  * Cache Busting - When the content is updated, the fingerprint will change. This will cause the remote clients to request a new copy of the content. This is generally known as *cache busting*.
+
+
+
+
+#### 10.1 Manifest File
+
+* Contains directives for including asset files - meaning the specified locations of those asset files.
+* Files are loaded, processed, concatenated, compressed.
+* Serves one file but still developed with many.
+
+Each asset whether, CSS/SCSS,Javascripts/Coffeescripts, has an application file name with it's corresponding file. type i.e **.scss or .js** is the manifest file for that specific section in the app/assets file.
+
+In there, any css or js files within that app/assets directory will automatically be required and be precompile automatically.
+
+Example:  Inside of the app/assets/stylesheets folder
+
+```scss
+/*Directives - Tells asset pipeline what is should do, what items it should include*/
+/*
+*=//require_self 
+*=//require_tree .
+*/
+```
+
+* require_self - refers to file itself, This puts the CSS contained within the file (if any) **at the precise location of the require_self call**. If require_self is called more than once, only the last call is respected.
+* require_tree . - requires all of the stylesheets in the whole in the current directory even in sub-directories which are nested inside of folders, and ready itself to be precompiled and be concatenated, if we have scss or css files which is not precompiled. we can then precompile them then serve it as it is through our web server.
+
+
+
+#### 10.2 Develoment vs Production
+
+* Development
+
+  * Skips Concatenation
+  * Skips compression
+  * Skips fingerprinting
+  * Does File processing (processing Sass, and coffeescript files)
+* Production
+
+  * Skips all of the same steps in Development
+
+  * Does not do any asset processing
+
+    * Assumes that assets have been precompiled
+* Why do we need to precompile those assets
+  * Because processing,concatenation compression and fingerprinting is slow.
+  * Slow (can easily take 1-5 minutes)
+  * We can precompile our assets easily by using a rake command
+
+
+
+
+```rake
+# if in production 
+RAILS_ENV=production bundle exec rake assets:precompile
+```
+
+#### 10.3 Stylesheets
+
+- Location
+  - With Asset pipeline: /app/assets/stylesheets
+  - Without Asset pipeline : /public/stylesheets
+
+#### Stylesheet Link Tag
+
+Rails helper method in loading css files
+
+```erb
+<!--where application is the name of the manifest file we want to include-->
+<!-- application.css -->
+<%= stylesheet_link_tag('application')%>
+
+<!--Override rails default to :media =>'screen' to :media => 'all'-->
+<%= stylesheet_link_tag('application', :media => 'all')%>
+```
+
+#### 10.4 Javascripts 
+
+* Location 
+  * With Asset pipeline: /app/assets/stylesheets
+  * Without Asset pipeline :/public/stylesheets
+
+#### Javascript Link Tag
+
+Rails helper method in loading javascript files
+
+```erb
+<!--where application is the name of the manifest file that  we want to include-->
+<%= javascript_include_tag('application') %>
+
+<!--To add a javascript snippet inside a template-->
+<%= javascript_tag("alert('Are You sure?');")%>
+
+<!-- or a javascript do/end block-->
+<%= javascript_tag do %>
+	<%= alert('Are you sure?')%>
+<% end %>
+```
+
+#### Escaping JavaScript
+
+```erb
+<% text = "User submitted text" %>
+
+<!--interpolate variables inside string literals-->
+<%= javascript_tag("alert('You said: #{text}');")%>
+```
+
+#### Cross site scripting 
+
+What this code does is were inserting an evil string that gets passed into a function for processing when the "text" gets passed into the function which takes form of name it then maliciously loops the function jsRoar since the string inputted was a append on exisiting alert syntax inside of the function block 
+
+```erb
+<%= text = "'); alert('Gotcha!"%>
+<%= javascript_tag("alert('You said: #{text}');") %>
+
+<!-- will break out the function
+function jsRoar(name) {
+  alert('I am' + name + 'Hear me roar');
+} 
+-->
+```
+
+#### To escape javascript 
+
+Since Javascript doesn't have a sanitize method such as ruby's sanitize helper method. 
+
+We can prepend our string literals with a "j()" called escape_javascript
+
+```erb
+<!--Escapes all javascript written in a form -->
+<%= javascript_tag("alert('You said: #{j(text)}');")%>
+<!-- alert('You said: \'); alert(\'Gotcha!');-->
+```
+
+#### 10.5 Difference between the app/assets, public/assets, lib/assets, and vendor/assets
+
+##### app/assets
+
+* Primarily used for development, but not served for production
+* Precompiles the CSS and Javascript 
+* Concatenates/Minifies CSS and Javascript files.
+* Enables Asset Finger printing and Cache Busting
+* Sends the precompiled copies are then served as static assets through the public/assets directory
+
+##### public/assets
+
+* From app/assets sends precompiled copies then serve these static assets as is.
+
+
+* Served exactly as-is
+  * No concatenation, compression, minification
+  * Can't use Sass, CoffeeScript, ERB
+* Don't get asset fingreprinted.
+  * No Cache busting
+
+
+##### lib/assets
+
+* is for your own libraries' code that doesn't really fit into the scope of the application or those libraries which are shared across applications.
+
+##### vendor/assets
+
+* Third Party libraries to be stored here
+* Must be specified in  which to require in the manifest file
+* Precompiles and Concatenates third party code into our code to be served as a single file.
+
+#### 10.6 Images
+
+* Location 
+  * With asset pipeline: /app/assets/images
+  * Without asset pipeline: /public/images
+    * User-uploaded images: /public/images
+  * Image Upload Gems
+    * Paperclip, CarrierWave
+
+#### Image Helpers
+
+```erb
+<%= image_tag('logo.png')%>
+<!-- image_tag with default size and alt name-->
+<%= image_tag('logo.png', :size => '90x55', alt: => 'logo')%>
+
+<!--image_tag with default width and height-->
+<%= image_tag('logo.png', :width => 90,:height => 55)%>
+```
+
+
+
 
 
 #### . Validations
@@ -1819,6 +2014,8 @@ Next PAGE: <%= @page + 1 %>
 <!-- {"id" => "20", "page" => "5", "controller" => "demo", "action" => "hello"} -->
 ```
 
+
+
 #### 9. Basic Route Types in Rails
 
 * Simple route(Match route) 
@@ -1846,7 +2043,7 @@ match "demo/index", :to => "demo#index", :via=> :get
 # Not commonly used but commonly used for as a catch all route if no actions are given inside our application
 match ':controller(/:action(/:id))', :via => :get
 
-# Where students is the StudentsController, edit as the action the StudentController's Action, and 52 as an id of the student we want to edit.
+# Where students is the StudentsController, edit as the action the StudentController's Action, and 52 as an id of the student we want to show.
 ```
 
 * Root route - The default route when user requests for our webpage

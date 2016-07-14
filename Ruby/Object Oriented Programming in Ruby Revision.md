@@ -159,8 +159,8 @@ Object-oriented programming (OOP) is a programming paradigm that uses objects an
 *  **Procs and Lambdas** - Similar to javascript's anonymous function, Where methods or blocks of code functionality that can be store inside a variable.
 
    ```ruby
-     Procs:full_name = Proc.new {|first,last| first + " " + last}
-           full_name.call("John","Doe")
+      Procs:full_name = Proc.new {|first,last| first + " " + last}
+            full_name.call("John","Doe")
    ```
 
 
@@ -202,6 +202,28 @@ Object-oriented programming (OOP) is a programming paradigm that uses objects an
 
 
 * **Super Keyword** - In most cases we don't want to override the super class's methods entirely. But change some functionality and tweak some code for better reusability. super calls the first instance of the parent class, then do the actual functionality from that method.
+
+  ```ruby
+  class SuperClass
+    def someMethod
+      "I'm a super method inside a super class"
+    end
+  end
+
+  class SubClass < SuperClass
+    def someMethod
+      super + " SubMethod"
+    end
+  end
+
+  # Instantiate a new object with our SuperClass
+  instanceof_SuperClass = SuperClass.new
+  puts instanceof_SuperClass.someMethod
+
+  # Instantiate a new object with our SubClass
+  instanceof_SubClass = SubClass.new
+  puts instanceof_SubClass.someMethod
+  ```
 
 
 
