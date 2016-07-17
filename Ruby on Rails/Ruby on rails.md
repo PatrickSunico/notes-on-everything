@@ -25,8 +25,6 @@ user.save # SQL UPDATE
 user.delete #SQL DELETE
 ```
 
-
-
 #### What is ActiveRelation
 
 * Object-oriented interpolation of relational algebra.
@@ -1278,93 +1276,7 @@ ex. subject/show/:id => where :id is equal to the url id hash string
 </div>
 ```
 
-
-
-#### 8.3 Form Basics
-
-#### Rails/ERB vs. HTML
-
-* Any template code that can be written with Rails/ERB can also be written with simple HTML.
-* Writing template code in Rails/ERB is almost always easier and more powerful than simple HTML.
-
-##### 1. Basic Form Validation by assigning attribute values to attribute types
-
-```erb
-<!-- rails route to create a new subject /subjects/create/action-->
-<form action = "/subjects/create" method="post">
-  <input type = "text" name="name"/> <!-- create a new subject_name-->
-  <input type = "text" name="position"/> <!-- assign a position-->
-  <input type = "text" name="visible"/> <!-- assign if visible or invisible-->
-  <input type ="submit" name="commit" value="Create Subject"/> <!-- submit the form-->
-</form>
-```
-
-##### 2. HTML Form, array of parameters
-
-```ruby
-params[:subject] 
-# {:name => "About Us", :position => '5', :visible => '1'} 
-# the subject[:attr_type] we defined in the view can now be treated as an array of all the attribute values to create a new subject
-subject = Subject.create(params[:subject])
-
-```
-
-where the object subject is the name of the instance of the class Subject from the model
-
-```erb
-<!-- rails route to create a new subject /subjects/create/action-->
-<form action = "/subjects/create" method="post">
-  <input type = "text" name="subject[name]"/> <!-- create a new subject_name-->
-  <input type = "text" name="subject[position]"/> <!-- assign a position-->
-  <input type = "text" name="subject[visible]"/> <!-- assign if visible or invisible-->
-  <input type ="submit" name="commit" value="Create Subject"/> <!-- submit the form-->
-</form>
-```
-
-##### 3. Rails/ERB form, array of parameters
-
-```erb
-# form_tag specify the :action for this form_tag helper for the create action
-<%= form_tag(:action => 'create') do %>
-  <%= text_field_tag('subject[name]') %>
-  <%= text_field_tag('subject[position]')%>
-  <%= text_field_tag('subject[visible]')%>
-  <%= submit_tag("Create Subject")
-<% end %>
-```
-
-##### 4. Rails Form, object-aware
-
-```erb
-# Short hand form in using the text_field helper methods for the create action form
-<%= form_tag(:action => 'create') do %>
-	<!-- Instead of using strings we can use symbols-->
-	<%= text_field(:subject, :name) %>
-  	<%= text_field(:subject,:position) %>
-  	<%= text_field(:subject, :visible) %>
-  	<%= submit_tag("Create Subject") %>
-<% end %>
-```
-
-##### 5. Rails form, form_for :object(Most Commonly used)
-
-```erb
-<!-- form_form syntax -->
-
-<%= form_for(:object_instantiated_from_class, :url => {:action => "action"}) do |var| %>
-	<%= text_field(:attr_type) %>
-<% end %>
--->
-
-<%= form_for(:subject,:url => {:action => 'create'}) do |subject| %>
-	<%= subject.text_field(:name) %>
-	<%= subject.text_field(:position) %>
-	<%= subject.text_field(:visible) %>
-  	<%= submit_tag("Create Subject") %>
-<% end %>
-```
-
-#### 8.4 New Action: new
+#### 8.3 New Action: new
 
 * First answer doesn't need an instance variable to specified in this particular new action
 * Second answer, and as a best practice, is to put an instance variable anyway
@@ -1627,7 +1539,7 @@ The basic code above illustrates that this controller and it's action will be re
 
 the container HTML that wraps around the yield tag will be the actual layout or shell of the action/templates we define separately. 
 
-One thing to note about rail's rendering capabilities, rails does not render them sequentially, rails first gathers instance variables and then binds them to the template
+**One thing to note about rail's rendering capabilities, rails does not render them sequentially, rails first gathers instance variables and then binds them to the template**
 
 ```erb
 <!DOCTYPE html>
@@ -1739,8 +1651,6 @@ Whenever we specify a partial and include it in an existing template, this will 
 * Allows writing assets in other languages
 * Adds assets fingerprinting  - Keeps cache assets up-to-date. The Asset file will be cached inside the users web browser. Whenever something about the file changes, the md5 hash will change and that gives the asset a new fingerprint and therefore a new filename.
   * Cache Busting - When the content is updated, the fingerprint will change. This will cause the remote clients to request a new copy of the content. This is generally known as *cache busting*.
-
-
 
 
 #### 10.1 Manifest File
@@ -1905,28 +1815,6 @@ We can prepend our string literals with a "j()" called escape_javascript
 * Third Party libraries to be stored here
 * Must be specified in  which to require in the manifest file
 * Precompiles and Concatenates third party code into our code to be served as a single file.
-
-#### 10.6 Images
-
-* Location 
-  * With asset pipeline: /app/assets/images
-  * Without asset pipeline: /public/images
-    * User-uploaded images: /public/images
-  * Image Upload Gems
-    * Paperclip, CarrierWave
-
-#### Image Helpers
-
-```erb
-<%= image_tag('logo.png')%>
-<!-- image_tag with default size and alt name-->
-<%= image_tag('logo.png', :size => '90x55', alt: => 'logo')%>
-
-<!--image_tag with default width and height-->
-<%= image_tag('logo.png', :width => 90,:height => 55)%>
-```
-
-
 
 
 

@@ -320,7 +320,7 @@ datetime.to_s(format_symbol)
 Time::DATE_FORMATS[:custom] = "%B %e, %Y at %l:%M %p"
 ```
 
-#### 3. Custom Helpers
+### 3. Custom Helpers
 
 - Ruby Modules
 - created when generating a controller
@@ -368,7 +368,7 @@ end
 <td class="center"><%= status_tag(subject.visible) %></td> 
 ```
 
-#### 4. Sanitize Helpers
+### 4. Sanitize Helpers
 
 - Preventing Cross-site scripting
   - Prevents scripting events from our forms if sent via processing the form
@@ -455,7 +455,236 @@ sanitize(@subject.content,
 <%= sanitize(simple_string, :tags => []) %> <br>
 ```
 
+### 5. Images
 
+- Location 
+  - With asset pipeline: /app/assets/images
+  - Without asset pipeline: /public/images
+    - User-uploaded images: /public/images
+  - Image Upload Gems
+    - Paperclip, CarrierWave
+
+#### Image Helpers
+
+```erb
+<%= image_tag('logo.png')%>
+<!-- image_tag with default size and alt name-->
+<%= image_tag('logo.png', :size => '90x55', alt: => 'logo')%>
+
+<!--image_tag with default width and height-->
+<%= image_tag('logo.png', :width => 90,:height => 55)%>
+```
+
+### 6. Forms
+
+#### Rule of Thumb using form_for
+
+- Take note form helpers automatically create an id specific to it's table name as we defined on our schema or in our migration file.
+
+```erb
+<%= form_for(:instance_from_class, :url => {:action => "action"}) do|var|%>
+    <%= var.text_field(:attr_type) %>
+<% end %>
+```
+
+#### Rails/ERB vs. HTML
+
+- Any template code that can be written with Rails/ERB can also be written with simple HTML.
+- Writing template code in Rails/ERB is almost always easier and more powerful than simple HTML.
+
+##### 1. Basic Form Validation by assigning attribute values to attribute types
+
+```erb
+<!-- rails route to create a new subject /subjects/create/action-->
+<form action = "/subjects/create" method="post">
+  <input type = "text" name="name"/> <!-- create a new subject_name-->
+  <input type = "text" name="position"/> <!-- assign a position-->
+  <input type = "text" name="visible"/> <!-- assign if visible or invisible-->
+  <input type ="submit" name="commit" value="Create Subject"/> <!-- submit the form-->
+</form>
+```
+
+##### 2. HTML Form, array of parameters
+
+```ruby
+params[:subject] 
+# {:name => "About Us", :position => '5', :visible => '1'} 
+# the subject[:attr_type] we defined in the view can now be treated as an array of all the attribute values to create a new subject
+subject = Subject.create(params[:subject])
+```
+
+where the object subject is the name of the instance of the class Subject from the model
+
+```erb
+<!-- rails route to create a new subject /subjects/create/action-->
+<form action = "/subjects/create" method="post">
+  <input type = "text" name="subject[name]"/> <!-- create a new subject_name-->
+  <input type = "text" name="subject[position]"/> <!-- assign a position-->
+  <input type = "text" name="subject[visible]"/> <!-- assign if visible or invisible-->
+  <input type ="submit" name="commit" value="Create Subject"/> <!-- submit the form-->
+</form>
+```
+
+##### 3. Rails/ERB form, array of parameters
+
+```erb
+# form_tag specify the :action for this form_tag helper for the create action
+<%= form_tag(:action => 'create') do %>
+  <%= text_field_tag('subject[name]') %>
+  <%= text_field_tag('subject[position]')%>
+  <%= text_field_tag('subject[visible]')%>
+  <%= submit_tag("Create Subject")
+<% end %>
+```
+
+##### 4. Rails Form, object-aware
+
+```erb
+# Short hand form in using the text_field helper methods for the create action form
+<%= form_tag(:action => 'create') do %>
+	<!-- Instead of using strings we can use symbols-->
+	<%= text_field(:subject, :name) %>
+  	<%= text_field(:subject,:position) %>
+  	<%= text_field(:subject, :visible) %>
+  	<%= submit_tag("Create Subject") %>
+<% end %>
+```
+
+##### 5. Rails form, form_for :object(Most Commonly used)
+
+```erb
+<!-- form_form syntax -->
+<%= form_for(:object_instantiated_from_class, :url => {:action => "action"}) do |var| %>
+	<%= text_field(:attr_type) %>
+<% end %>
+```
+
+```erb
+<%= form_for(:subject,:url => {:action => 'create'}) do |subject| %>
+	<%= subject.text_field(:name) %>
+	<%= subject.text_field(:position) %>
+	<%= subject.text_field(:visible) %>
+  	<%= submit_tag("Create Subject") %>
+<% end %>
+```
+
+#### 6.1 Form Option Helpers
+
+##### Form Helpers Options
+
+- text_field
+- password_field
+- text_area
+- hidden_field
+- radio_button
+- check_box
+- file_field
+- label
+
+##### A Basic form featuring all of the form helpers listed above
+
+```erb
+<%= form_for(:subject, :url => {:action => "create"}) do |f| %>
+  <%= f.text_field(:name, :size => 40, :maxlength => 40) %>
+  <%= f.password_field(:password, :size => 40, :maxlength => 40 %>
+  <%= f.text_area(:description, :size => "40x5" %>
+  <%= f.hidden_field(:token) %>
+  <%= f.radio_button(:content_type, "Ruby"%>
+  <%= f.radion_button(:content_type, "JavaScript"%>
+  <%= f.label(:visible) %>
+  <%= f.check_box(:visible)%>
+  <%= f.file_field(:logo) %>
+  submit_tag("Submit")
+<% end %>
+```
+
+##### Using select tag only
+
+```erb
+<%= select(object,attribute,choices, options ={}, html_options={}) %>
+```
+
+##### Options
+
+- :selected => object.attribute select other than the object's attribute value, i.e subject.id, subject.name and etc.
+- :include_blank => false // blank option
+  - :prompt => false//text prompt option
+- :disable => false 
+
+##### Select Helper (drop-down list)
+
+```erb
+<%= form_for(:section, :url => {:action => "create"}) do |f| %>
+<!--Range Selection-->
+<%=f.select(:position, 1..5) %>
+
+<!--Array Selection-->
+<%=f.select(:content_type, ['text', 'HTML']) %>
+
+<!-- Hash Selection-->
+<!--if table is boolean give visible 1 and hidden 0-->
+<%=f.select(:visible, {"visible" => 1, "hidden" => 2}) %>
+
+<!--Array of arrays-->
+<!-- Selects all of the pages and "maps" it inside an array from inside the blog here we can specify what type of values we want from the object with p as a reference from Page and name and ias the attribute type -->
+
+<!-- Map a Class Objects instances by itself itself-->
+<%= f.select(:page_id, Page.all.map {|p| [p.name, p.id]})%>
+
+	submit_tag("Submit")
+<% end %>
+
+<!-- or from the controller pass an instance variable-->
+<%= f.select(:page_id, @pages.map {|p| [p.name, p.id]})%>
+
+	submit_tag("Submit")
+<% end %>
+```
+
+#### 6.2 Date Select Helper
+
+Common Helpers: 
+
+* :start_year => Time.now.year-5 - Determines the range from start 
+* :end_year => Time.now.year+5 - Determines the range from end
+* :order => [:year, :month, :day] - Orders dates in Y, MM , DD
+* discard_year => false - Discards the year
+* :discard_month => false - Discard the month
+* :discard_day => false - Discards the day
+* :include_blank => false - Includes a blank selection if user selected none
+* :prompt => false - prompts a user for a date
+* use_month_numbers => false - configured to use month as numbers instead of names
+* :add_month_numbers => false 
+* :use_short_month => false 
+* :date_seperator => "" - Adds space between the dates 
+
+```ruby
+date_select(:object, :attribute, options={}, html_options={})
+```
+
+
+
+#### 6.3 Time Select Helper
+
+* :include_seconds => false - does not include seconds only HH:MM
+* :minute_step => 1 - displays 00 as the beginning all the way to 59 which are seconds in a minute
+* :prompt => false - prompts a user for a Time input
+* :time_separator => ":" - includes a time separator between the time values
+
+```ruby
+time_select(:object, :attribute, :options={}, html_options={})
+```
+
+
+
+#### 6.4 Date and Time Select Helper
+
+* all date_select and time_select options 
+* :datetime_separator => "-"
+
+```ruby
+datetime_select(object, attribute, options={}, html_options={})
+```
 
 
 
