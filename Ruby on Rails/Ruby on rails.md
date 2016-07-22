@@ -1818,7 +1818,7 @@ We can prepend our string literals with a "j()" called escape_javascript
 
 
 
-#### . Validations
+#### 11 . Validations
 
 Data validation ensures that the data received from the form matches the attribute types we assigned in our model. 
 
@@ -1833,6 +1833,44 @@ class Article < ActiveRecord::Base
   validates :description, presence: true, length: {minimum: 10, maximum: 300}
 end
 ```
+
+##### Custom Error messages as helper methods
+
+```ruby
+def error_messages_for(object)
+  render(:partial => "application/error_messages", :locals => {:object => object})
+end
+```
+
+We can reuse these helper methods since they are defined inside of our application_helpers folder. which is a shared folders for controllers that they can access to.
+
+##### Custom Error messages as partials
+
+We made a folder named application inside of our views folder directory then we made a custom partial that will render if a user has an error on their forms.
+
+##### views/application/_error_messages_for.html.erb
+
+```erb
+<!-- Shared templates through out all the controllers -->
+<!-- if it has an object and the object has numerous errors that is greater than 0 -->
+<!-- In summary if the object in size of errors are greater than zero display this div as an error message -->
+<% if object && object.errors.size > 0 %>
+  <div id="errorExplanation">
+    <!-- pluralize(n0 = singular, n1 = singular n2 = plural, "error = singular, errors = plural" ) -->
+    <h2><%=pluralize(object.errors.size, "error")%> prohibited this record from being saved</h2>
+    <p>There were problems with the following fields</p>
+    <ul>
+      <!-- list each error from the objects attribute types in full messages -->
+      <% object.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+```
+
+
+
 
 #### 8. URL Parameters
 
@@ -1856,7 +1894,7 @@ Where action is the hello action, :page is which page we want to be directed at,
 
 #Symbol
 params[:action]
-#String
+#f
 params["action"]
 ```
 

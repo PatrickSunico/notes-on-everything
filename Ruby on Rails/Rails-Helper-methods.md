@@ -479,7 +479,7 @@ sanitize(@subject.content,
 
 #### Rule of Thumb using form_for
 
-- Take note form helpers automatically create an id specific to it's table name as we defined on our schema or in our migration file.
+- Take note form helpers automatically creates an html id specific to it's table name as we defined on our schema or in our migration file.
 
 ```erb
 <%= form_for(:instance_from_class, :url => {:action => "action"}) do|var|%>
@@ -686,7 +686,64 @@ time_select(:object, :attribute, :options={}, html_options={})
 datetime_select(object, attribute, options={}, html_options={})
 ```
 
+#### 7. Handling Form Errors
 
+##### Simple Validation
+
+* validates_presence_of:name - Requires a form to have some value for an attribute, or else rails won't allow it to be saved to the database.
+* object.errors - Array containing any errors added by validations
+  * Remember when has an error in inputting some values into forms, we will rerender the form again to let the user fix their errors. so if the save fails don't save the value but instead rerender the form to let the user resubmit those values.
+
+##### Useful methods for errors
+
+* object.errors.clear - Forcibly clear the errors at that point
+* object.errors.size - Tells how many errors there are.
+* object.errors.each {|attr,msg| … } 
+  * Example: returns a message :name, "can't be Blank"
+* object.errors.full_messages.each{|msg| … }(Commonly used)
+  * Example: returns a message "Name can't be blank"
+
+##### Displaying errors
+
+* List errors above the form
+* Print/Highlight errors with each form input
+
+#### 8. Preventing Cross-Site Request Forgery
+
+* CSRF for short
+* Require User Authentication
+* Regulary log out inactive users
+* GET requests should be read-only
+* Actions that expect POST request should only respond to POST request
+
+
+
+##### 8.1 Authenticity token
+
+Unique token in a users session file. - 
+
+When the user views a form to create, update, or destroy a resource, the Rails app creates a random `authenticity_token`, stores this token in the session, and places it in a hidden field in the form. When the user submits the form, Rails looks for the `authenticity_token`, compares it to the one stored in the session, and if they match the request is allowed to continue.
+
+```
+{"utf8"=>"✓", "authenticity_token"=>"CZ34cxfkD+IafDTx2x5Prp/73IS3DHO5d7BpIN3Sj/7SCINIV4LF8YlqV48zSv2pD3Gr10STe3eKI6/LQBcEwA==", "page"=>{"subject_id"=>"3", "name"=>"First Page", "permalink"=>"first", "position"=>"1", "visible"=>"1"}, "commit"=>"Update Page", "controller"=>"pages", "action"=>"update", "id"=>"1"}
+```
+
+
+
+```ruby
+# Validation Method in prevent CSRF Attacks
+protect_from_forgery with: :exception
+```
+
+
+
+#### CSRF Tokens for JavaScript and AJAX
+
+Use a meta tag to let JavaSript and AJAX follow the validation method that is defined in our application  controller. In which case it prevents all CSRF attacks either from JavaScript or AJAX
+
+```erb
+<%= csrf_meta_tags %>
+```
 
 
 
