@@ -14,8 +14,6 @@ OR Specify which version
 rvm install ruby-"version number"
 ```
 
-
-
 #### 3. Upgrading RubyGems Gem manager
 
 This updates RubyGems to the stable and latest version

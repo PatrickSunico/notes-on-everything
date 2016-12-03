@@ -2016,6 +2016,72 @@ In ruby we can link several templates all together using these 3 methods.
 * Testing Environment - used mainly, for testing, but without making changes to either our development and production environment, here we can do basic crud testing before implementing them in our development environment.
 
 
+
+
+##### 5. Nested Partials
+
+##### Using a Layout
+
+Calls the _nested code to render the layout then inside this block this gets rendered nested inside of the _nested structure code. 
+
+This can be rendered either in a template or a partial as long as were specifying which layout we want to render and the code inside this block will be rendered as yield as we can see in the _nested code syntax.
+
+##### index.html.erb - can be place in template or partial
+
+```erb
+<%= render :layout => '/shared/nested', :locals => {:title => 'Portfolio'} do %>
+  <div class="col-md-6">
+    <div class="panel-md">
+       <%= image_tag("yelpcamp.jpg", class: "img-responsive", alt: "YelpCamp")%>
+       <!--if Hover animation display this -->
+       <div class="hover-info">
+         <div class="info-wrapper">
+             <!--Title-->
+             <h2 class="project-title"> YelpCamp </h2>
+             <!--Info-->
+             <span class="info">
+               Airbnb clone but for famous campsites.
+             </span>
+             <!-- Button -->
+             <div class="btn-position">
+               <a class="btn btn-sharp"><i class="ps-github-logo"></i></a>
+               <a class="btn btn-sharp"><i class="ps-heroku-logo"></i></a>
+             </div>
+         </div>
+       </div>
+    </div>
+  </div>
+<% end %>
+```
+
+##### _nested.html.erb
+
+ The code that yields whatever's inside of the "do/end" block will get rendered here
+
+```erb
+_nested code 
+<section id="portfolio">
+  <div class="container">
+    <div class="row">
+      <div class="header-text">
+        <h1><%= title -%></h1>
+        <hr class="line">
+      </div>
+
+      <%= yield %> 
+	// Displays the index code 
+
+    </div>
+  </div>
+</section>
+```
+
+##### Using a partial instead
+
+
+
+
+
 #### Useful git commands
 
 **Redo Changes before commit**
