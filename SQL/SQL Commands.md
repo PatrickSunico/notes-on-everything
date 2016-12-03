@@ -25,7 +25,11 @@
 #### Entity type
 
 *  An Entity type can be summed up as a category on which the entities that were stored.
+<<<<<<< HEAD
    * From the above example, an example of an Entity can be called Patrick or Bill, Or something else. But when it comes to an Entity type we are refering from the table something that relates Patrick or Bill together which we can call a "user" or a "customer" inside the table above. In summary
+=======
+*  From the above example, an example of an Entity can be called Patrick or Bill, Or something else. But when it comes to an Entity type we are refering from the table something that relates Patrick or Bill together which we can call a "user" or a "customer" inside the table above. In summary
+>>>>>>> f514d191062bb4a6a7780be4a0d4a2a5684ef02d
 
 #### Attribute type
 
@@ -35,8 +39,26 @@
 
 * Data integrity - is a design pattern that most developers follow to make sure if your data connectivity and asociations are correct.
 * Conceptual Schema - how we think, on how to design our database to cater our own usecase.
-* Logical Schema - how the data relates to each other, or how table rows can be matched together to form a singular joined table.
+* Logical Schema - how the data relates to each other, or how table rows can be matched together to form a singular joined table. 
 * Physical Schema - how we're going to implement the actual concept and logic of our database
+
+#### Types of Data Integrity
+
+* Entity Integrity - ensures that no two rows in a table can have the exact same values in all the columns.
+  Domain Integrity - ensures that the values in a table must be within a specified range. It is enforced by restricting the range, type and format of data. I.E a group of employees for recruitment only from 20-50 years old.
+* Referential Integrity - ensures consistency in data among tables in a database when records are modified. I.E an assigned task for an employee once finished will be deleted including all reference to the completed project.
+* User Defined Integrity - refers to the rules defined by a user.
+
+
+
+#### Integrity Constraints
+
+* **Unique Constraint** -  ensures that a column or a group of columns in a table does not contain duplicate values. Enforces entity integrity in the table.
+* **CHECK Constraint** - restricts the values entered in a column by defining a valid range or a valid format for entered values. This enforces domain integrity in the table.
+* **PRIMARY KEY Constraint** - PRIMARY KEY constraint defined on a column ensures that each record of the column is unique. This ensures entity integrity in the table.
+* **FOREIGN KEY Constraint** - creates logical relationships between multiple tables of a database. This ensures referential integrity. 
+
+
 
 #### SQL
 

@@ -32,3 +32,5 @@ I solved this problem by explicity adding the secret keybase environment variabl
 ```
 config.secret_key_base = ENV["SECRET_KEY_BASE"]
 ```
+
+
