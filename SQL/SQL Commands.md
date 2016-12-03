@@ -25,7 +25,7 @@
 #### Entity type
 
 *  An Entity type can be summed up as a category on which the entities that were stored.
-  * From the above example, an example of an Entity can be called Patrick or Bill, Or something else. But when it comes to an Entity type we are refering from the table something that relates Patrick or Bill together which we can call a "user" or a "customer" inside the table above. In summary
+   * From the above example, an example of an Entity can be called Patrick or Bill, Or something else. But when it comes to an Entity type we are refering from the table something that relates Patrick or Bill together which we can call a "user" or a "customer" inside the table above. In summary
 
 #### Attribute type
 
@@ -98,7 +98,19 @@ SELECT column_name, column_name
 SELECT * FROM table_name;
 ```
 
-##### 
+##### mysql tips for homebrew
+
+to launch mysql via homebrew service we can do
+
+```unix
+brew services start mysql
+```
+
+to stop
+
+```unix
+brew services stop mysql
+```
 
 ##### To login back to our assigned database
 

@@ -1,4 +1,12 @@
-#### 1. Upgrading RVM 
+#### 1. RVM gemset list 
+
+lists all available gemsets
+
+```unix
+rvm gemset list_all
+```
+
+
 
 
 
