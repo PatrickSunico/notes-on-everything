@@ -25,12 +25,8 @@
 #### Entity type
 
 *  An Entity type can be summed up as a category on which the entities that were stored.
-<<<<<<< HEAD
-   * From the above example, an example of an Entity can be called Patrick or Bill, Or something else. But when it comes to an Entity type we are refering from the table something that relates Patrick or Bill together which we can call a "user" or a "customer" inside the table above. In summary
-=======
 *  From the above example, an example of an Entity can be called Patrick or Bill, Or something else. But when it comes to an Entity type we are refering from the table something that relates Patrick or Bill together which we can call a "user" or a "customer" inside the table above. In summary
->>>>>>> f514d191062bb4a6a7780be4a0d4a2a5684ef02d
-
+*  From the above example, an example of an Entity can be called Patrick or Bill, Or something else. But when it comes to an Entity type we are refering from the table something that relates Patrick or Bill together which we can call a "user" or a "customer" inside the table above. In summary
 #### Attribute type
 
 * The attribute types are basically the categories of the attribute values.
@@ -57,6 +53,30 @@
 * **CHECK Constraint** - restricts the values entered in a column by defining a valid range or a valid format for entered values. This enforces domain integrity in the table.
 * **PRIMARY KEY Constraint** - PRIMARY KEY constraint defined on a column ensures that each record of the column is unique. This ensures entity integrity in the table.
 * **FOREIGN KEY Constraint** - creates logical relationships between multiple tables of a database. This ensures referential integrity. 
+
+
+#### Super Key and Candidate Keys
+
+* A Super Key is a any number of columns that creates a unique row. I.E Username, Email Address.
+* A candidate key is the least number of columns needed to force every row to be unique,
+
+#### Database Anomalies 
+
+* Insertion Anomalies -
+* Update Anomalies - 
+* Deletion Anomalies - 
+
+#### Database Normalisation 
+
+* 1st Normal Form - In a table every attribute is atomic. meaning no multivalued attributes and no composite attributes.
+
+Example 1: Remember in 1st normal form every attribute is atomic so no multivalued attributes in a single row. 
+
+* 2nd Normal Form - A Table is in 2NF if there is no partial dependency. 
+* ​
+
+
+
 
 
 
