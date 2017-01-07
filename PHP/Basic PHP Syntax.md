@@ -1,7 +1,5 @@
 ### Basic PHP Syntax
 
-
-
 ```php
 <?php ?> opening and closing tags
   
@@ -16,8 +14,6 @@
   echo "Hello" . $name . "<br>"; // . represents concatenating strings
 ?>
 ```
-
-
 
 ### Variables
 
@@ -245,5 +241,51 @@ echo strtoupper($string);
 //LowerCase string
 $string = "TEST";
 echo strtolower($string);
+```
+
+#### Array Functions 
+
+```php
+// Array Functions
+// max value in an array
+$list = [34,55,23]; 
+echo max($list) . "\n"; // 55
+
+//min value 
+echo min($list). "\n"; //23
+
+// Sort 
+// sorts the array from lowest to highest
+sort($list);
+print_r($list) . "\n";
+```
+
+#### Handling Form Data (Basic)
+
+```php
+<?php
+  // $_POST gets all form data once sent
+  // if submit button clicked echo our successful
+    if(isset($_POST['submit'])){
+      // echo "Submit Succesful";
+      $names = array("Nigga-kun", "Tyrone-desu", "Jamal-sama");
+      $username = $_POST['username'];
+      $password = $_POST['password'];
+      // echo $username . "\n" . $password;
+      if(strlen($username)  < 5) {
+        echo "<h4>Username too short 7-16 characters required</h4>";
+      }
+      elseif (strlen($username) >= 10){
+        echo "<h4> Username characters too long </h4>";
+      }
+      // in_array checks if a string or name matches somewhere in an array.
+      // checks if username is matching inside the names array
+      if(in_array($username, $names)) {
+        echo "Welcome Back, " . $username;
+      } else {
+        echo "Invalid Username";
+      }
+    }
+?>
 ```
 

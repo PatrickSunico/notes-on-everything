@@ -160,6 +160,52 @@ brew services stop mysql
 mysql -u "username" -p
 ```
 
+#### PHP MYSQL Connection
+
+```php
+<?php 
+  	// mysqli_connect('which_server','mysql_username','mysql_password','database_name')
+	$connection = mysqli_connect('localhost', 'root', 'root', 'loginapp');
+	// check if connection is success or failure 
+    if ($connection) {
+      echo "We are connected";
+    } else {
+      die("Database Connection Failed");
+    }
+?>
+```
+
+### PHP CRUD
+
+#### PHP Inserting Data into mysql Table
+
+```php
+<?php
+  //make sure your database is connected properly into your php application
+  $connection = mysqli_connect('localhost', 'root', 'root', 'database_name');
+  if($connection) {
+  	echo "Connected";
+  } else {
+  	die("Database Connection Failed");
+  }
+
+  // make a standard insert query command
+  $query = "INSERT INTO users(username, password)";
+  // Concatenate the values from the form to the query
+  $query .= "VALUES('$username', '$password')";
+  $result = mysqli_query($connection, $query);
+  
+  // if the result is false or there is an error
+  if(!$result) {
+   die('Query Failed' . mysqli_error());
+  }
+?>
+```
+
+
+
+
+
 #### Common SQL Terminologies
 
 - Column - Set of a single simple type
