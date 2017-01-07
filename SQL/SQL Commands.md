@@ -47,7 +47,7 @@
 
 
 
-#### Integrity Constraints
+#### fIntegrity Constraints
 
 * **Unique Constraint** -  ensures that a column or a group of columns in a table does not contain duplicate values. Enforces entity integrity in the table.
 * **CHECK Constraint** - restricts the values entered in a column by defining a valid range or a valid format for entered values. This enforces domain integrity in the table.
@@ -140,6 +140,31 @@ SELECT column_name, column_name
 SELECT * FROM table_name;
 ```
 
+##### SQL CREATE TABLE Syntax 
+
+```sql
+CREATE TABLE Credentials (
+  PersonID int, 
+  FirstName varchar(255),
+  LastName varchar(255),
+  Email varchar(255),
+  Password varchar(255)
+);
+
+/* Create Table with Auto Incremented Column */
+CREATE TABLE Credentials
+(
+UserID int NOT NULL AUTO_INCREMENT,
+LastName varchar(255) NOT NULL,
+FirstName varchar(255),
+Email varchar(255),
+Password varchar(255),
+PRIMARY KEY (UserID)
+);
+```
+
+
+
 ##### mysql tips for homebrew
 
 to launch mysql via homebrew service we can do
@@ -158,48 +183,6 @@ brew services stop mysql
 
 ```sql
 mysql -u "username" -p
-```
-
-#### PHP MYSQL Connection
-
-```php
-<?php 
-  	// mysqli_connect('which_server','mysql_username','mysql_password','database_name')
-	$connection = mysqli_connect('localhost', 'root', 'root', 'loginapp');
-	// check if connection is success or failure 
-    if ($connection) {
-      echo "We are connected";
-    } else {
-      die("Database Connection Failed");
-    }
-?>
-```
-
-### PHP CRUD
-
-#### PHP Inserting Data into mysql Table
-
-```php
-<?php
-  //make sure your database is connected properly into your php application
-  $connection = mysqli_connect('localhost', 'root', 'root', 'database_name');
-  if($connection) {
-  	echo "Connected";
-  } else {
-  	die("Database Connection Failed");
-  }
-
-  // make a standard insert query command
-  $query = "INSERT INTO users(username, password)";
-  // Concatenate the values from the form to the query
-  $query .= "VALUES('$username', '$password')";
-  $result = mysqli_query($connection, $query);
-  
-  // if the result is false or there is an error
-  if(!$result) {
-   die('Query Failed' . mysqli_error());
-  }
-?>
 ```
 
 

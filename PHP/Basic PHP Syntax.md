@@ -198,6 +198,8 @@ $result2 = subtract(230,$result);
 echo "Difference is :" . $result2;
 ```
 
+.
+
 ### Built in PHP Functions
 
 #### Math Functions
@@ -289,3 +291,242 @@ print_r($list) . "\n";
 ?>
 ```
 
+#### PHP $_POST Super Global validation
+
+```php
+<?php 
+  	// on button submit check the values from the form
+	if(isset($_POST['submit'])) {
+  		$username = $_POST['username'];
+      	$password = $_POST['password'];
+      	
+      	// if username and password exists on form submit 
+      	if($username && $password) {
+  			echo "Validated Successfully";
+		} else {
+  			echo "Please enter a Username or Password";
+		}
+	}
+?>
+```
+
+#### PHP MYSQL Connection
+
+```php
+<?php 
+  	// mysqli_connect('which_server','mysql_username','mysql_password','database_name')
+	$connection = mysqli_connect('localhost', 'root', 'root', 'loginapp');
+	// check if connection is success or failure 
+	if(!connection) { 
+      die("Database Connection Failed");
+    }
+?>
+```
+
+### PHP CRUD
+
+#### Global keyword in functions
+
+In PHP global variables must be declared global inside a function if they are going to be used in that function.
+
+```php
+// global variables
+$a = 1;
+$b = 2;
+function Sum() {
+  // global variable defined inside the Sum Function
+  global $a,$b;
+  
+  $sum = $a + $b;
+  return $sum;
+}
+
+$result = Sum();
+echo $result;
+```
+
+The above script will output *3*. By declaring $a and $b global within the function, all references to either variable will refer to the global version. There is no limit to the number of global variables that can be manipulated by a function
+
+#### PHP Inserting Data into mysql Table (CREATE)
+
+**Standalone**
+
+```php
+<?php
+  //make sure your database is connected properly into your php application
+  $connection = mysqli_connect('localhost', 'root', 'root', 'database_name');
+  if($connection) {
+  	echo "Connected";
+  } else {
+  	die("Database Connection Failed");
+  }
+
+  // make a standard insert query command
+  $query = "INSERT INTO users(username, password)";
+  // Concatenate the values from the form to the query
+  $query .= "VALUES('$username', '$password')";
+  $result = mysqli_query($connection, $query);
+  
+  // if the result is false or there is an error
+  if(!$result) {
+   die('Query Failed' . mysqli_error());
+  }
+?>
+```
+
+**As a function**
+
+```php
+<?php
+function createData() {
+    global $connection;
+    if (isset($_POST['submit'])) {
+
+      $username = $_POST['username'];
+      $password = $_POST['password'];
+      // sql query Insert data from form fields to users table via username column and password column
+      // Create
+      $query = "INSERT INTO users(username, password)";
+      // Concatenate
+      $query .= "VALUES('$username', '$password')";
+      $result = mysqli_query($connection, $query);
+
+      // if $result is false
+      if(!$result) {
+        die('Query Failed' . mysqli_error($connection));
+      } else {
+        echo "Record Created";
+      }
+    }
+  }
+?>
+```
+
+
+
+#### PHP (READ)
+
+**mysqli_fetch_row** = The mysqli_fetch_row() function fetches one row from a result-set and returns it as an enumerated array.
+
+**mysqli_fetch_assoc** = The mysqli_fetch_assoc() function fetches a result row as an associative array.
+
+
+
+```php
+// SQL Query selects all data from the table
+$query = "SELECT * FROM users";
+$result = mysqli_query($connection, $query);
+
+if(!result) {
+  die('Query Failed' . mysqli_error($connection));
+}
+```
+
+**As a function**
+
+```php
+<?php
+function readData() {
+    global $connection;
+    $query = "SELECT * FROM users";
+    $result = mysqli_query($connection, $query);
+    if(!result) {
+      die('Query Failed' . mysqli_error($connection));
+    }
+
+    while($row = mysqli_fetch_assoc($result)) {
+       print_r($row);
+    }
+ }
+?>
+```
+
+#### PHP (UPDATE)
+
+First Create a form that will enable a user to select a row id
+
+```php
+<div class="form-group">
+  <select name="id">
+    <?php
+      // returns as row id
+      showAllData();
+    ?>
+  </select>
+</div>
+```
+
+Then create the function that will select the row and evaluate the data to be updated
+
+```php
+// read from db for update
+function showAllData() {
+  // explicitly define global to the $connection variable from the db.php file so the function can access it's data
+  global $connection;
+  // gather all data from users table
+  $query = "SELECT * FROM users";
+  $result = mysqli_query($connection, $query);
+
+  if(!$result) {
+    die('Query Failed' . mysqli_error($connection));
+  }
+
+  // option selector for update
+  while($row = mysqli_fetch_assoc($result)) {
+    $id = $row['id'];
+    echo "<option value='$id'> $id </option>";
+  }
+}
+```
+
+Code for Updating the table
+
+```php
+<?php 
+  function updateTable() {
+  	global $connection;
+    if(isset($_POST['submit'])) {
+      $username = $_POST['username'];
+      $password = $_POST['password'];
+      $id = $_POST['id'];
+	  // on post set the updated data from where id was selected to be updated
+      $query = "UPDATE users SET username = '$username', password = '$password' WHERE id = $id";
+      $result = mysqli_query($connection, $query);
+
+      if(!$result) {
+        die("Query Failed" . mysqli_error($connection));
+      } else {
+        echo "Update Successful";
+      }
+    }
+  
+  }
+?>
+```
+
+#### PHP (DELETE)
+
+```php
+// Delete from table
+function deleteRows() {
+  global $connection;
+
+  if(isset($_POST['submit'])) {
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+    $id = $_POST['id'];
+	
+    // selects which row to be deleted
+    $query = "DELETE FROM users WHERE id = $id ";
+
+    $result = mysqli_query($connection, $query);
+
+    if(!$result) {
+      die("Query Failed" . mysqli_error($connection));
+    } else {
+      echo "Record Deleted";
+    }
+  }
+  
+}
+```
