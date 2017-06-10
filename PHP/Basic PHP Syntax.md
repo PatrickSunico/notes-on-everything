@@ -10,7 +10,7 @@
 <?php
   print ('hello world');
 
-  $name = "Nigga";
+  $name = "Test";
   echo "Hello" . $name . "<br>"; // . represents concatenating strings
 ?>
 ```
@@ -98,7 +98,7 @@ $people = array(
           "username" => "janeDoe",
           "fullName" => "DaneJoe",
           "age" => 26,
-          "gender" => "Transgender",
+          "gender" => "Test",
           "country" => "Mexico"
     )
   );
@@ -135,7 +135,7 @@ while($num != 10) { //condition
 
 ```php
 for($i = 0; $i < 10; $i++) {
-  echo "soi" . "\n";
+  echo "soi" . "\n"; // prints soi 10 times
 }
 ```
 
@@ -270,7 +270,7 @@ print_r($list) . "\n";
   // if submit button clicked echo our successful
     if(isset($_POST['submit'])){
       // echo "Submit Succesful";
-      $names = array("Nigga-kun", "Tyrone-desu", "Jamal-sama");
+      $names = array("test-kun", "Tyrone-desu", "Jamal-sama");
       $username = $_POST['username'];
       $password = $_POST['password'];
       // echo $username . "\n" . $password;
@@ -322,6 +322,26 @@ print_r($list) . "\n";
     }
 ?>
 ```
+
+#### PHP PDO MYSQL Connection
+
+```php
+<?php
+  $server = 'localhost';
+  $username = 'root';
+  $password = 'root';
+  $database = 'auth'; // database name
+
+  try {
+    // PDO method most secure way in doing database transactions
+    $conn = new PDO("mysql:host=$server;dbname=$database", $username, $password);
+  } catch (PDOExceptiom $e){ // if error on connection
+    die("Connection Failed" . $e->getMessage());
+  }
+?>
+```
+
+
 
 ### PHP CRUD
 
@@ -378,6 +398,7 @@ The above script will output *3*. By declaring $a and $b global within the 
 
 ```php
 <?php
+  include "db.php"
 function createData() {
     global $connection;
     if (isset($_POST['submit'])) {
@@ -426,6 +447,7 @@ if(!result) {
 
 ```php
 <?php
+  include "db.php"
 function readData() {
     global $connection;
     $query = "SELECT * FROM users";
@@ -461,6 +483,7 @@ Then create the function that will select the row and evaluate the data to be up
 ```php
 // read from db for update
 function showAllData() {
+  
   // explicitly define global to the $connection variable from the db.php file so the function can access it's data
   global $connection;
   // gather all data from users table
@@ -530,3 +553,89 @@ function deleteRows() {
   
 }
 ```
+#### Password Hashing with PHP
+
+##### BLOWFISH ENCRYPTION (Standard)
+
+```php
+<?php
+  $password = "somestringasapassword";
+  $hash_Format = "$2y$10$";
+  $salt = "iusesomecrazystrings22";
+  $hash_and_salt = $hash_Format . $salt;
+  $encrypted_password = crypt($password, $hash_and_salt);
+
+  // encrypted password
+  echo $encrypted_password; 
+?>
+```
+
+##### password_hash php function with PASSWORD_BCRYPT
+
+**PASSWORD_BCRYPT** will always have 60 characters in length 
+
+```php
+// Standard PASSWORD_BCRYPT
+<?php 
+	$set_password = "somestring";
+	$encrypted_password = password_hash($set_password, PASSWORD_BCRYPT);
+	echo $encrypted_password;
+?>
+  
+// PASSWORD_BCRYPT with additional hash options
+$options = [
+    'cost' => 12,
+];
+$set_password = "somestring";
+$encrypted_password = password_hash($set_password, PASSWORD_BCRYPT, $options);
+echo $encrypted_password;
+?>
+```
+
+#### bindParam() function 
+
+Binds a PHP variable to a corresponding named or question mark placeholder in the SQL statement that was used to prepare the statement. 
+
+
+
+#### Difference Between Require and Include
+
+* **include( )** will attempt to load the specified file, but will allow the script to continue if not successfully loaded.
+
+
+* **require( )** on the other hand will cause a "Fatal Error" to occur if the specified file is not successfully loaded.
+
+
+### Array Sorting Methods 
+
+```php
+function data() {
+  $food = array(
+    'Fish' => array(
+      'data1' => 'Salmon',
+      'data2' => 'Pike',
+      'data3' => 'Bass'
+    ),
+      'Fish2' => array(
+      'data1' => 'Catfish',
+      'data2' => 'Pike',
+      'data3' => 'Bass'
+    )
+  );
+  // $objList = json_decode(json_encode($food), false);
+  
+  foreach($food as $key => $value){
+    if(is_array($value)) {
+      // echo $value['data1'];
+      // echo $key;
+      if($key === 'Fish'){
+        echo $value['data1'];
+      }
+      elseif($key === 'Fish2'){
+        echo $value['data1'];
+      }
+    }
+  }
+  data();
+```
+
